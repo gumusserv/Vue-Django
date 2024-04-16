@@ -1,0 +1,118 @@
+/* src/assets/global.css */
+/* @import url('https://fonts.googleapis.com/css?family=Julius+Sans+One|Open+Sans:300,400'); */
+h1 {
+  font-family: 'Julius Sans One', sans-serif;
+  font-size: 4.5rem;
+  letter-spacing: 0.5rem;
+}
+
+p {
+  margin-top: 1rem;
+}
+
+a {
+  color: #5bc0de;
+}
+
+a:hover {
+  color: #31b0d5;
+  text-decoration: none;
+}
+
+#hm {
+    min-height: 100%;
+  }
+  
+  .heading {
+    color: #FFF;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: 40%;
+    width: 100%;
+  }
+  
+  .middle {
+    color: #FFF;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: 30%;
+    width: 100%;
+  }
+
+.bg-img1 {
+    background: linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url('https://wallpapercave.com/wp/wp1906348.png');
+  }
+  
+  .bg-img2 {
+    background: linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url('https://i.pinimg.com/originals/96/18/6b/96186b308addc3c4700a26adb3aac278.gif');
+  }
+  
+  .parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    min-height: 100%;
+    position: relative;
+  }
+  
+  .container {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 850px;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .card-text {
+    font-size: 1rem;
+    font-weight: 300;
+  }
+  
+
+   @media only screen and (max-device-width: 1024px) {
+    .parallax {background-attachment: scroll;}
+    .heading {top: 30%;} 
+    .middle {top: 15%;}
+  }
+  
+  .navbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 20px;
+    z-index: 100;
+  }
+  
+  .nav-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .nav-list li {
+    margin-left: 20px;
+  }
+  
+  .nav-list li a {
+    text-decoration: none;
+    color: #FFF;
+    font-size: 1.8rem;
+    padding: 5px 10px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  
+  .nav-list li a:hover {
+    border-color: #5bc0de;
+    color: #31b0d5;
+  } 
