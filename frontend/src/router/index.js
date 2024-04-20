@@ -2,11 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import MyLogin from '../components/MyLogin.vue';
 import MyRegister from '../components/MyRegister.vue';
+import MovieList from '../views/MoviesList.vue';  // 新增导入 MovieList 组件
+import MovieDetail from '../views/MovieDetail.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView ,meta: { title: 'FCC: Tribute Page' }},
   { path: '/login', name: 'Login', component: MyLogin },
-  { path: '/register', name: 'Register', component: MyRegister }
+  { path: '/register', name: 'Register', component: MyRegister },
+  { path: '/movies', name: 'MovieList', component: MovieList, meta: { title: 'Movie List' }},  // 新增路由
+  { path: '/movies/:id', name: 'MovieDetail', component: MovieDetail },
 ];
 
 const router = createRouter({

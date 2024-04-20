@@ -20,5 +20,7 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),  # 添加这行
-    path('api/accounts/', include('accounts.urls'))
+    path('api/accounts/', include('accounts.urls')),
+    path('movies/', include('movies.urls')),
+    path('api/', include('favourite.urls')),
 ]

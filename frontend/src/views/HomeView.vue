@@ -5,7 +5,7 @@
     <div class="navbar">
       <ul class="nav-list">
         <li><router-link to="/">主页</router-link></li>
-        <li><router-link to="/search">发现</router-link></li>
+        <li><router-link to="/movies">发现</router-link></li>
         <li v-if="isAuthenticated"><router-link to="/logout" @click.prevent="logout">退出</router-link></li>
         <li v-else><router-link to="/login">登录/注册</router-link></li>
       </ul>

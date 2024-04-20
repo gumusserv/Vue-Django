@@ -1,0 +1,26 @@
+<!-- movies/templates/movies/display_movies.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Movies</title>
+</head>
+<body>
+    <h1>All Movies</h1>
+    <ul>
+        {% for movie in movies %}
+        <li>
+            <h2>{{ movie.title }}</h2>
+            <p>Duration: {{ movie.duration }} minutes</p>
+            <p>Year: {{ movie.year }}</p>
+            <p>Director: {{ movie.director }}</p>
+            <p>Actors: {{ movie.actors }}</p>
+            <p>Genre: {{ movie.genre }}</p>
+            <p><a href="{{ movie.movie_link }}">More Info</a></p>
+            <p><img src="{{ movie.cover_image_url }}" alt="Cover image for {{ movie.title }}"></p>
+            <p>Rating: {{ movie.historical_rating }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
