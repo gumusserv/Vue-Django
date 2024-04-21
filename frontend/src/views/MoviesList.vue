@@ -54,7 +54,7 @@ export default {
         [this.searchType]: this.searchQuery
       };
 
-      axios.get('http://127.0.0.1:8000/movies/api/movies/', { params })
+      axios.get('http://10.110.0.110:8000/movies/api/movies/', { params })
         .then(response => {
           this.movies = response.data.results;
           this.totalPages = Math.ceil(response.data.count / 10);  // 根据后端返回的总数计算总页数

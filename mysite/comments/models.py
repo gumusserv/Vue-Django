@@ -21,3 +21,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} comment {self.movie.title} with {self.comment} and rating {self.rating}"
+    
+from django.db.models import Avg
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Comment)
+def update_movie_rating(sender, instance, created, **kwargs):
+    if instance.rating is not None:  # 确保评分不为空
+        # 计算所有相关评论的平均评分
+        average_rating = Comment.objects.filter(movie=instance.movie, rating__isnull=False).aggregate(Avg('rating'))['rating__avg']
+        # 更新电影的历史评分
+        instance.movie.historical_rating = average_rating
+        instance.movie.save()

@@ -39,8 +39,8 @@
         }).then(() => {
           this.$router.push('/login'); // Redirect to login page after successful registration
           alert('Registration successful. Please login.');
-        }).catch(error => {
-          alert('Registration Failed: ' + error.response.data.error);
+        }).catch(() => {
+          alert('Registration Failed: ' );
         });
       }
     }

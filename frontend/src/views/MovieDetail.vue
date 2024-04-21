@@ -9,8 +9,8 @@
       <p><strong>Link:</strong> <a :href="movie.movie_link" target="_blank">{{ movie.movie_link }}</a></p>
       <p><strong>Cover:</strong> <img :src="movie.cover_image_url" alt="Cover Image"></p>
       <p><strong>Rating:</strong> {{ movie.historical_rating }}</p>
-      <button @click="addFavorite" v-if="isAuthenticated">
-        <i class="fa fa-star"></i> 收藏
+      <button @click="toggleFavorite" v-if="isAuthenticated">
+        <i class="fa" :class="isFavorited ? 'fa-star' : 'fa-star-o'"></i> {{ isFavorited ? '取消收藏' : '收藏' }}
       </button>
       <!-- 评论区 -->
       <div>
@@ -54,39 +54,67 @@
     methods: {
       fetchMovieDetails() {
         const movieId = this.$route.params.id;
-        axios.get(`http://127.0.0.1:8000/movies/api/movies/${movieId}/`)
+        axios.get(`http://10.110.0.110:8000/movies/api/movies/${movieId}/`)
           .then(response => {
             this.movie = response.data;
+            this.checkFavorite();
           })
           .catch(error => {
             console.error("There was an error fetching the movie details:", error);
           });
       },
-      addFavorite() {
-        const username = this.$store.getters.username;  // 从 Vuex 获取用户名
-        const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
+      // addFavorite() {
+      //   const username = this.$store.getters.username;  // 从 Vuex 获取用户名
+      //   const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
 
-        // 打印参数
-        console.log('Username:', username);
-        console.log('Movie ID:', movie_id);
+      //   // 打印参数
+      //   console.log('Username:', username);
+      //   console.log('Movie ID:', movie_id);
 
-        axios.post(`http://127.0.0.1:8000/api/favorites/add/`,{
-            username: username,
-            movie_id: movie_id
-          })
+      //   axios.post(`http://10.110.0.110:8000/api/favorites/add/`,{
+      //       username: username,
+      //       movie_id: movie_id
+      //     })
+      //   .then(() => {
+      //     alert('电影已成功收藏');
+      //   })
+      //   .catch(error => {
+      //     console.error('Error adding to favorites:', error);
+      //     alert('收藏失败，可能是因为未登录或其他错误');
+      //   });
+      // },
+      toggleFavorite() {
+            const url = `http://10.110.0.110:8000/api/favorites/${this.isFavorited ? 'remove' : 'add'}/`;
+            axios.post(url, {
+                username: this.username,
+            movie_id: this.movie.movie_id
+        })
         .then(() => {
-          alert('电影已成功收藏');
+            this.isFavorited = !this.isFavorited;  // 切换收藏状态
+            alert(`电影已${this.isFavorited ? '收藏' : '取消收藏'}`);
         })
         .catch(error => {
-          console.error('Error adding to favorites:', error);
-          alert('收藏失败，可能是因为未登录或其他错误');
+            console.error('Error toggling favorite:', error);
+            alert('操作失败，可能是因为未登录或其他错误');
         });
-      },
+    },
+    checkFavorite() {
+        const username = this.$store.getters.username;  // 从 Vuex 获取用户名
+        const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
+        axios.get(`http://10.110.0.110:8000/api/favorites/check/${username}/${movie_id}/`)  // 确保末尾有斜杠
+        .then(response => {
+            this.isFavorited = response.data.isFavorited;
+        })
+        .catch(error => {
+            console.error('Error checking favorite status:', error);
+        });
+    },
+
       submitComment() {
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
 
-        axios.post('http://127.0.0.1:8000/api/comment/add-comment/', {
+        axios.post('http://10.110.0.110:8000/api/comment/add-comment/', {
           username: username,
           movie_id: movie_id,
           comment: this.userComment
@@ -103,8 +131,8 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设后端提供了一个删除评论的API
-        // axios.delete(`http://127.0.0.1:8000/api/comment/delete-comment`,{
-        axios.post(`http://127.0.0.1:8000/api/comment/delete-comment/`,{
+        // axios.delete(`http://10.110.0.110:8000/api/comment/delete-comment`,{
+        axios.post(`http://10.110.0.110:8000/api/comment/delete-comment/`,{
           username: username,
           movie_id: movie_id,
         })
@@ -122,13 +150,14 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设后端提供了一个提交评分的API
-        axios.post(`http://127.0.0.1:8000/api/comment/add-rating/`, {
+        axios.post(`http://10.110.0.110:8000/api/comment/add-rating/`, {
           username: username,
           movie_id: movie_id,
           rating: this.userRating
         })
         .then(() => {
           alert('评分成功提交！');
+          this.fetchMovieDetails();  // 重新获取电影详情以更新页面上的评分信息
         })
         .catch(error => {
           console.error('Error submitting rating:', error);
@@ -140,7 +169,7 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设后端提供了一个删除评分的API
-        axios.delete(`http://127.0.0.1:8000/api/comment/delete-rating/`, {
+        axios.delete(`http://10.110.0.110:8000/api/comment/delete-rating/`, {
           username: username,
           movie_id: movie_id,
         })
