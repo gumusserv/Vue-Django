@@ -6,8 +6,8 @@ from .models import Favorite, Movie, User
 
 @api_view(['POST'])
 def add_favorite(request):
-    username = request.query_params.get('username')
-    movie_id = request.query_params.get('movie_id')
+    username = request.data.get('username')
+    movie_id = request.data.get('movie_id')
     try:
         movie = Movie.objects.get(movie_id=movie_id)
         user = User.objects.get(username=username)
@@ -20,7 +20,6 @@ def add_favorite(request):
 
 
 @api_view(['DELETE'])
-# @permission_classes([IsAuthenticated])
 def remove_favorite(request):
     movie_id = request.data.get('movie_id')
     try:

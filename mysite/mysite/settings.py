@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "accounts",
     "movies",
     "favorites",
+    "comments",
     "rest_framework",
     'rest_framework.authtoken',
     'corsheaders',
