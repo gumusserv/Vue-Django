@@ -37,6 +37,7 @@ def add_rating(request):
         if rating in allowed_ratings:
             newComment.rating = rating
             newComment.save()
+            movie.refresh_from_db()  # 从数据库重新加载电影数据
             return Response({'message': 'Add Rating Successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': 'Invalid rating value'}, status=status.HTTP_400_BAD_REQUEST)
