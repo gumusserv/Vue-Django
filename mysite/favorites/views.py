@@ -1,42 +1,34 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Favorite
-from movies.models import Movie
-from .serializers import FavoriteSerializer  # 你需要为Favorite模型创建一个序列化器
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Favorite, Movie, User
 
-class FavoriteListView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        favorites = Favorite.objects.filter(user=request.user)
-        serializer = FavoriteSerializer(favorites, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        movie_id = request.data.get('movie_id')
+@api_view(['POST'])
+def add_favorite(request):
+    username = request.query_params.get('username')
+    movie_id = request.query_params.get('movie_id')
+    try:
         movie = Movie.objects.get(movie_id=movie_id)
-        favorite, created = Favorite.objects.get_or_create(user=request.user, movie=movie)
-        if created:
-            return Response({"status": "success"}, status=status.HTTP_201_CREATED)
-        return Response({"status": "favorite already exists"}, status=status.HTTP_409_CONFLICT)
+        user = User.objects.get(username=username)
+        Favorite.objects.get_or_create(user=user, movie=movie)
+        return Response({'message': 'Movie added to favorites'}, status=status.HTTP_201_CREATED)
+    except Movie.DoesNotExist:
+        return Response({'error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request):
-        movie_id = request.data.get('movie_id')
+
+@api_view(['DELETE'])
+# @permission_classes([IsAuthenticated])
+def remove_favorite(request):
+    movie_id = request.data.get('movie_id')
+    try:
         movie = Movie.objects.get(movie_id=movie_id)
-        favorite = Favorite.objects.filter(user=request.user, movie=movie)
+        favorite = Favorite.objects.get(user=request.user, movie=movie)
         favorite.delete()
-        return Response({"status": "removed"}, status=status.HTTP_204_NO_CONTENT)
-    
-class FavoriteListCreateView(generics.ListCreateAPIView):
-    serializer_class = FavoriteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        # 返回当前用户的所有收藏
-        return Favorite.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        # 当创建新的收藏时, 自动设置用户为当前请求的用户
-        serializer.save(user=self.request.user)
+        return Response({'message': 'Movie removed from favorites'}, status=status.HTTP_204_NO_CONTENT)
+    except Movie.DoesNotExist:
+        return Response({'error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Favorite.DoesNotExist:
+        return Response({'error': 'Favorite not found'}, status=status.HTTP_404_NOT_FOUND)

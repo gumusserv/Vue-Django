@@ -22,5 +22,5 @@ urlpatterns = [
     path('', include('app.urls')),  # 添加这行
     path('api/accounts/', include('accounts.urls')),
     path('movies/', include('movies.urls')),
-    path('api/favorites/', include('favorites.urls')),
+    path('', include('favorites.urls'))
 ]
