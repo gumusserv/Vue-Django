@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     fetchItems() {
-      axios.get('http://10.110.0.110:8000/api/items/')
+      axios.get('http://10.181.91.67:8000/api/items/')
         .then(response => {
           this.items = response.data;
         })

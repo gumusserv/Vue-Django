@@ -29,7 +29,7 @@ export default createStore({
       }
     },
     login({ commit }, credentials) {
-      return axios.post('http://10.110.0.110:8000/api/accounts/login/', credentials)
+      return axios.post('http://10.181.91.67:8000/api/accounts/login/', credentials)
         .then(response => {
           localStorage.setItem('userToken', response.data.token);  // Assume the token is returned by your backend
           localStorage.setItem('username', response.data.username || credentials.username);
@@ -46,7 +46,7 @@ export default createStore({
       commit('setUsername', null);
     },
     register({ commit }, credentials) {
-      return axios.post('http://10.110.0.110:8000/api/accounts/register/', credentials)
+      return axios.post('http://10.181.91.67:8000/api/accounts/register/', credentials)
         .then(() => {
           // Optionally handle token if registration also logs the user in
           commit('setAuthentication', true);
