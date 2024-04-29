@@ -171,7 +171,7 @@ export default {
   },
   methods: {
     fetchMoviesAndInitPage(){
-      this.currentPage = 1;
+      // this.currentPage = 1;
       this.fetchMovies();
     },
     fetchMovies() {
@@ -252,12 +252,14 @@ export default {
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
+        this.$router.push({ name: 'MovieListWithPage', params: { page: this.currentPage } });
         this.fetchMovies();
       }
     },
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
+        this.$router.push({ name: 'MovieListWithPage', params: { page: this.currentPage } });
         this.fetchMovies();
       }
     },
@@ -274,6 +276,7 @@ export default {
     }
   },
   mounted() {
+    this.currentPage = parseInt(this.$route.params.page, 10) || 1;
     this.fetchMovies();
     this.fetchGenreCounts();
   }

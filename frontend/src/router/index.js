@@ -11,6 +11,7 @@ const routes = [
   { path: '/register', name: 'Register', component: MyRegister },
   { path: '/movies', name: 'MovieList', component: MovieList, meta: { title: 'Movie List' }},  // 新增路由
   { path: '/movies/:id', name: 'MovieDetail', component: MovieDetail },
+  { path: '/movies/page/:page?', name: 'MovieListWithPage', component: MovieList, meta: { title: 'Movie List' }},  // 新增路由带页码
 ];
 
 const router = createRouter({
