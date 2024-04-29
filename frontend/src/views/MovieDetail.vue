@@ -203,8 +203,9 @@
           <h4>LEAVE A COMMENT</h4>
           <div id="comments-container">
             <div class="comment">
-              <textarea v-model="userComment" placeholder="Add your comment here..." v-if="!hasUserCommented()"></textarea>
-              <textarea v-model="userComment" placeholder="You have comment." v-else></textarea>
+              <!-- <textarea v-model="userComment" placeholder="Add your comment here..." v-if="!hasUserCommented()"></textarea>
+              <textarea v-model="userComment" placeholder="You have comment." v-else></textarea> -->
+              <textarea v-model="userComment" :placeholder="hasUserCommented ? this.userComment : 'Add your comment here...'" v-if="isAuthenticated"></textarea>
               <br>
               <button @click="submitComment" v-if="isAuthenticated">Submit Comment</button>
               <button @click="deleteComment" v-if="isAuthenticated">Delete Comment</button>
@@ -372,6 +373,7 @@
         .then(() => {
           // alert('评分成功提交！');
           this.fetchMovieDetails();  // 重新获取电影详情以更新页面上的评分信息
+          this.userRating = rating;
         })
         .catch(error => {
           console.error('Error submitting rating:', error);
@@ -396,11 +398,39 @@
           console.error('Error deleting rating:', error);
           alert('删除评分失败');
         });
-      }
+      },
+      fetchRating() {
+        const username = this.$store.getters.username;  // 从 Vuex 获取用户名
+        const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
+        // 假设已经设置好 API 端点和 movieId
+        axios.get(`http://10.181.91.67:8000/api/rating/${username}/${movie_id}`)
+            .then(response => {
+                this.userRating = response.data.rating;
+            })
+            .catch(error => {
+                console.error("Error fetching the rating:", error);
+            });
+      },
+      fetchUserCommnet() {
+        const username = this.$store.getters.username;  // 从 Vuex 获取用户名
+        const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
+        // 假设已经设置好 API 端点和 movieId
+        axios.get(`http://10.181.91.67:8000/api/comment/${username}/${movie_id}`)
+            .then(response => {
+                this.userComment = response.data.comment;
+            })
+            .catch(error => {
+                console.error("Error fetching the comment:", error);
+            });
+      },
+      
     },
     mounted() {
       this.fetchMovieDetails();
       this.fetchComments();
+      this.fetchRating();
+      this.fetchUserCommnet();
+
     }
   }
   </script>

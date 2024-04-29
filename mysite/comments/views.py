@@ -6,7 +6,7 @@ from .models import Comment, Movie, User
 from django.db.models import Q
 from .serializers import UserMovieCommentSerializer
 from rest_framework.exceptions import NotFound
-
+from django.http import JsonResponse
 @api_view(['POST'])
 def add_comment(request):
     username = request.data.get('username')
@@ -127,3 +127,18 @@ class MovieCommentListView(generics.ListAPIView):
         ).exclude(
             Q(comment__isnull=True) | Q(comment__exact='')
         )
+
+def get_user_rating(request, username, movie_id):
+    user_rating = Comment.objects.filter(user=username, movie_id=movie_id).first()
+    if user_rating:
+        return JsonResponse({'rating': user_rating.rating})
+    else:
+        return JsonResponse({'rating': None})
+    
+def get_user_comment(request, username, movie_id):
+    user_comment = Comment.objects.filter(user=username, movie_id=movie_id).first()
+    if user_comment:
+        return JsonResponse({'comment': user_comment.comment})
+    else:
+        return JsonResponse({'comment': None})
+    
