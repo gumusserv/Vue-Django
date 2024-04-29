@@ -11,6 +11,7 @@
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
+    "vue-instantsearch": "^4.16.0",
     "vue-router": "^4.3.0",
     "vuex": "^4.0.0"
   },

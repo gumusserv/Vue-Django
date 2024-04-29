@@ -1,8 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 from .models import Favorite, Movie, User
+from movies.serializers import MovieSerializer
+from .serializers import FavoriteSerializer
 
 @api_view(['POST'])
 def add_favorite(request):
@@ -47,3 +49,18 @@ def check_favorite(request, username, movie_id):
         return Response({'error': 'Movie not found'}, status=404)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
+    
+class UserFavoriteListView(generics.ListAPIView):
+    serializer_class = MovieSerializer  # 使用电影的序列化器
+
+    def get_queryset(self):
+        # 根据传入的用户名获取用户对象
+        username = self.request.query_params.get('username')
+        user = User.objects.get(username=username)
+
+        # 获取该用户收藏的电影
+        favorite_movies = Favorite.objects.filter(user=user).values_list('movie', flat=True)
+
+        # 返回收藏电影的详细信息
+        return Movie.objects.filter(pk__in=favorite_movies)
+
