@@ -3,7 +3,9 @@
   <div class="container1">
     <div class="top">
       <div class="input-container1">
-        <input type="text" v-model="searchQuery" placeholder="Search by movie title" @keyup.enter="fetchMoviesAndInitPage" class="search-input"/>
+        <!-- <input type="text" v-model="searchQuery" placeholder="Search by movie title" @keyup.enter="fetchMoviesAndInitPage" class="search-input"/> -->
+        <input type="text" v-model="searchQuery" placeholder="Search by movie title" @change="fetchMoviesAndInitPage" class="search-input"/>
+
         <div class="search-button" @click="fetchMovies">
           <i class="fa fa-search"></i>
         </div>
@@ -58,12 +60,12 @@
           <div class="facet-title">Year</div>
           <div class="year-range-selector">
             <label for="year-min">From:</label>
-            <input type="range" id="year-min" v-model="yearMin" min="1951" max="2024" @change="fetchMoviesAndInitPage" />
+            <input type="range" id="year-min" v-model="yearMin" min="1900" max="2030" @change="fetchMoviesAndInitPage" />
             <span>{{ yearMin }}</span>
           </div>
           <div class="year-range-selector">
             <label for="year-max">To:</label>
-            <input type="range" id="year-max" v-model="yearMax" min="1951" max="2024" @change="fetchMoviesAndInitPage" />
+            <input type="range" id="year-max" v-model="yearMax" min="1900" max="2030" @change="fetchMoviesAndInitPage" />
             <span>{{ yearMax }}</span>
           </div>
         </div>
@@ -89,11 +91,32 @@
             </router-link>
           </li>
         </ul> -->
-        <div class="movie-list">
+        <!-- <div class="movie-list">
           <li v-for="movie in movies" :key="movie.id">
             <router-link :to="`/movies/${movie.movie_id}`">
               <article class="movie">
-                <img class="movie-image" :src="movie.cover_image_url" />
+                <img class="movie-image" :src="`/images/movie_${movie.movie_id}.jpg`" />
+                <div class="movie-meta">
+                  <div class="movie-title">
+                    {{ movie.title }}
+                    <span class="movie-year">{{ movie.year }}</span>
+                  </div>
+                  <div class="movie-genres">
+                    Genres: {{ movie.genre }}
+                  </div>
+                  <div class="movie-rating">
+                    Rating: {{ movie.historical_rating }}
+                  </div>
+                </div>
+              </article>
+            </router-link>
+          </li>
+        </div> -->
+        <div class="movie-list">
+          <li v-for="movie in movies" :key="movie.id" class="movie-item">
+            <router-link :to="`/movies/${movie.movie_id}`">
+              <article class="movie-card">
+                <img class="movie-image" :src="`/images/movie_${movie.movie_id}.jpg`" />
                 <div class="movie-meta">
                   <div class="movie-title">
                     {{ movie.title }}
@@ -110,6 +133,7 @@
             </router-link>
           </li>
         </div>
+
 
         <div>
           <button @click="previousPage" :disabled="currentPage <= 1">Previous Page</button>
@@ -137,12 +161,12 @@ export default {
       searchQuery: '',
       searchType: 'title',
       genres: [
+        { name: '剧情', count: 0, selected: false },
         { name: '科幻', count: 0, selected: false },
-        { name: '冒险', count: 0, selected: false },
-        { name: '动作', count: 0, selected: false },
+        { name: '动画', count: 0, selected: false },
+        { name: '爱情', count: 0, selected: false },
         { name: '喜剧', count: 0, selected: false },
-        { name: '戏剧', count: 0, selected: false },
-        { name: '爱情', count: 0, selected: false }
+        { name: '动作', count: 0, selected: false }
       ],
       ratingFilter: 0, // 默认不过滤（显示所有评分）
       ratings: [
@@ -152,8 +176,8 @@ export default {
         { score: 1, count: 0 },
         { score: 0, count: 0 }
       ],
-      yearMin: 1951,
-      yearMax: 2024,
+      yearMin: 1900,
+      yearMax: 2030,
       totalResults: 0,
     };
   },
@@ -171,7 +195,7 @@ export default {
   },
   methods: {
     fetchMoviesAndInitPage(){
-      // this.currentPage = 1;
+      this.currentPage = 1;
       this.fetchMovies();
     },
     fetchMovies() {
@@ -186,7 +210,7 @@ export default {
         year_max: this.yearMax,
       };
 
-      axios.get('http://10.181.91.67:8000/movies/api/movies/', { params })
+      axios.get('http://127.0.0.1:8000/movies/api/movies/', { params })
         .then(response => {
           this.movies = response.data.results;
           this.totalResults = response.data.count;
@@ -215,7 +239,7 @@ export default {
       };
 
       // 发送请求到后端，获取带有当前筛选条件的题材计数
-      axios.get('http://10.181.91.67:8000/movies/api/genres/counts', { params })
+      axios.get('http://127.0.0.1:8000/movies/api/genres/counts', { params })
         .then(response => {
           // 更新前端的题材数组，以匹配从后端接收到的计数
           this.genres.forEach(genre => {
@@ -237,7 +261,7 @@ export default {
         year_max: this.yearMax,
       };
 
-      axios.get('http://10.181.91.67:8000/movies/api/ratings/counts', { params })
+      axios.get('http://127.0.0.1:8000/movies/api/ratings/counts', { params })
         .then(response => {
           this.ratings.forEach(rating => {
             const found = response.data.ratings.find(r => r.rating === rating.score);
@@ -434,15 +458,7 @@ export default {
   min-width: 380px;
 }
 
-.movie {
-  position: relative;
-  display: flex;
-  margin: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  padding: 0.2em;
-}
+
 
 .movie-image {
   flex-shrink: 0;
@@ -657,34 +673,91 @@ input[type="radio"]:checked + label:before {
 .year-range-selector input[type="range"] {
   margin-right: 10px;
 }
-
+/*
 .movie-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between; /* This can adjust spacing */
-  margin: 0 -15px; /* Adjust gutter space here */
+  justify-content: space-between; 
+  margin: 0 -15px; 
 }
 
 .movie {
-  flex: 1 1 29%; /* Adjusted for gutter */
-  margin: 10px; /* Gutter space */
+  position: relative;
+  display: flex;
+  margin: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 0.2em;
+}
+
+.movie {
+  flex: 1 1 29%; 
+  margin: 10px; 
   padding: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   border-radius: 5px;
   background-color: white;
 }
+*/
 
-@media (max-width: 800px) {
-  .movie {
-    flex: 1 1 47%; /* On smaller screens, show 2 per row */
-  }
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px; /* 调整卡片之间的间距 */
+  list-style-type: none;
+  padding: 0;
 }
 
-@media (max-width: 500px) {
-  .movie {
-    flex: 1 1 100%; /* On very small screens, show 1 per row */
-  }
+.movie-item {
+  display: flex;
 }
+
+.movie-card {
+  display: flex;
+  flex-direction: row;
+  width: 400px; /* 固定卡片宽度 */
+  height: 230px; /* 固定卡片高度 */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.movie-image {
+  width: 150px; /* 图片宽度占据左边1/3 */
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px;
+  width: 250px; /* 剩余部分占据右边 */
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.movie-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.movie-year {
+  font-size: 16px;
+  color: #888;
+}
+
+.movie-genres,
+.movie-rating {
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+
+
 
 
 

@@ -28,7 +28,7 @@
       </div> -->
       <section class="content">
         <article class="demo-area">
-        <img class="demo-trigger" :src="movie.cover_image_url" data-zoom="https://demos.imgix.net/wristwatch.jpg?w=1000&ch=DPR&dpr=2">
+        <img class="demo-trigger" :src="`/images/movie_${movie.movie_id}.jpg`" data-zoom="https://demos.imgix.net/wristwatch.jpg?w=1000&ch=DPR&dpr=2">
         <div class="detail">
         <section>
           <div class="title-row">
@@ -175,8 +175,8 @@
       <section class="content">
         <article>
           <h1>电影介绍</h1>
-          <p>{{movie.description}}</p>
-          <p>忘了写电影介绍字段, 先拿这段文字占位置.............</p>
+          <p>{{movie.discription}}</p>
+          
           
         </article>
       </section>
@@ -261,7 +261,7 @@
       fetchComments() {
         this.loading = true;
         const movieId = this.$route.params.id;
-        axios.get(`http://10.181.91.67:8000/api/comment/get_comments_byMovies/?movie_id=${movieId}`)
+        axios.get(`http://127.0.0.1:8000/api/comment/get_comments_byMovies/?movie_id=${movieId}`)
           .then(response => {
             this.comments = response.data.results;
             this.loading = false;
@@ -274,7 +274,7 @@
       },
       fetchMovieDetails() {
         const movieId = this.$route.params.id;
-        axios.get(`http://10.181.91.67:8000/movies/api/movies/${movieId}/`)
+        axios.get(`http://127.0.0.1:8000/movies/api/movies/${movieId}/`)
           .then(response => {
             this.movie = response.data;
             this.checkFavorite();
@@ -285,7 +285,7 @@
         this.fetchComments();
       },
       toggleFavorite() {
-            const url = `http://10.181.91.67:8000/api/favorites/${this.isFavorited ? 'remove' : 'add'}/`;
+            const url = `http://127.0.0.1:8000/api/favorites/${this.isFavorited ? 'remove' : 'add'}/`;
             axios.post(url, {
                 username: this.username,
             movie_id: this.movie.movie_id
@@ -302,7 +302,7 @@
     checkFavorite() {
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
-        axios.get(`http://10.181.91.67:8000/api/favorites/check/${username}/${movie_id}/`)  // 确保末尾有斜杠
+        axios.get(`http://127.0.0.1:8000/api/favorites/check/${username}/${movie_id}/`)  // 确保末尾有斜杠
         .then(response => {
             this.isFavorited = response.data.isFavorited;
         })
@@ -315,7 +315,7 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
 
-        axios.post('http://10.181.91.67:8000/api/comment/add-comment/', {
+        axios.post('http://127.0.0.1:8000/api/comment/add-comment/', {
           username: username,
           movie_id: movie_id,
           comment: this.userComment
@@ -333,8 +333,8 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设后端提供了一个删除评论的API
-        // axios.delete(`http://10.181.91.67:8000/api/comment/delete-comment`,{
-        axios.post(`http://10.181.91.67:8000/api/comment/delete-comment/`,{
+        // axios.delete(`http://127.0.0.1:8000/api/comment/delete-comment`,{
+        axios.post(`http://127.0.0.1:8000/api/comment/delete-comment/`,{
           username: username,
           movie_id: movie_id,
         })
@@ -364,7 +364,7 @@
         }
         this.lastConfirmedRating = rating;
         // 假设后端提供了一个提交评分的API
-        axios.post(`http://10.181.91.67:8000/api/comment/add-rating/`, {
+        axios.post(`http://127.0.0.1:8000/api/comment/add-rating/`, {
           username: username,
           movie_id: movie_id,
           // rating: this.userRating
@@ -386,7 +386,7 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设后端提供了一个删除评分的API
-        axios.delete(`http://10.181.91.67:8000/api/comment/delete-rating/`, {
+        axios.delete(`http://127.0.0.1:8000/api/comment/delete-rating/`, {
           username: username,
           movie_id: movie_id,
         })
@@ -403,7 +403,7 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设已经设置好 API 端点和 movieId
-        axios.get(`http://10.181.91.67:8000/api/rating/${username}/${movie_id}`)
+        axios.get(`http://127.0.0.1:8000/api/rating/${username}/${movie_id}`)
             .then(response => {
                 this.userRating = response.data.rating;
             })
@@ -415,7 +415,7 @@
         const username = this.$store.getters.username;  // 从 Vuex 获取用户名
         const movie_id = this.$route.params.id;  // 从路由参数获取电影ID
         // 假设已经设置好 API 端点和 movieId
-        axios.get(`http://10.181.91.67:8000/api/comment/${username}/${movie_id}`)
+        axios.get(`http://127.0.0.1:8000/api/comment/${username}/${movie_id}`)
             .then(response => {
                 this.userComment = response.data.comment;
             })
