@@ -11,6 +11,10 @@ class Movie(models.Model):
     movie_link = models.URLField()  # 电影链接
     cover_image_url = models.URLField()  # 电影封面图片链接
     historical_rating = models.FloatField()  # 历史评分
+    douban_id = models.CharField(max_length=100, default="无")  # 新字段，设置一个默认值
+    discription = models.TextField()
+    
+
 
     def __str__(self):
         return self.title

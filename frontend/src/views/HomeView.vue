@@ -21,7 +21,7 @@
   
     <div class="card-deck">
       <div class="card" v-for="movie in favorites" :key="movie.id">
-        <img class="card-img-top img-fluid" :src="movie.cover_image_url" :alt="movie.title">
+        <img class="card-img-top img-fluid" :src="`/images/movie_${movie.movie_id}.jpg`" :alt="movie.title">
         <div class="card-block">
           <h4 class="card-title">{{ movie.title }} <small class="text-muted">({{ movie.year }})</small></h4>
           <p class="card-text">{{ movie.description }}</p>
@@ -90,7 +90,7 @@ export default {
     fetchFavorites() {
       this.loading = true;
       const username = this.$store.getters.username;
-      axios.get(`http://10.181.91.67:8000/api/favorites/get_favorites/?username=${username}`)
+      axios.get(`http://127.0.0.1:8000/api/favorites/get_favorites/?username=${username}`)
         .then(response => {
           this.favorites = response.data.results;
           this.loading = false;
@@ -104,7 +104,7 @@ export default {
     fetchComments() {
       this.loading = true;
       const username = this.$store.getters.username;
-      axios.get(`http://10.181.91.67:8000/api/comment/get_comments/?username=${username}`)
+      axios.get(`http://127.0.0.1:8000/api/comment/get_comments/?username=${username}`)
         .then(response => {
           this.comments = response.data.results;
           this.loading = false;
